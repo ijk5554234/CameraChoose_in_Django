@@ -11,7 +11,7 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'mysite.views.home_page'),
-    url(r'^callback/', 'camerachoose.views.test'),
+    url(r'^callback/', 'camerachoose.views.compare'),
     url(r'^camerachoose/', include('camerachoose.urls')),
 
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',

@@ -6,14 +6,14 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta name="description" content="" />
 <meta name="keywords" content="" />
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/ripples.min.css" rel="stylesheet">
-<link href="css/material-wfont.min.css" rel="stylesheet">
+<link href="/static/css/bootstrap.min.css" rel="stylesheet">
+<link href="/static/css/ripples.min.css" rel="stylesheet">
+<link href="/static/css/material-wfont.min.css" rel="stylesheet">
 
-<link rel="stylesheet" href="css/skel.css" />
-<link rel="stylesheet" href="css/style.css" />
-<link rel="stylesheet" href="css/style-desktop.css" />
-<link rel="stylesheet" href="css/style-noscript.css" />
+<link rel="stylesheet" href="/static/css/skel.css" />
+<link rel="stylesheet" href="/static/css/style.css" />
+<link rel="stylesheet" href="/static/css/style-desktop.css" />
+<link rel="stylesheet" href="/static/css/style-noscript.css" />
 <style>
 ::-webkit-input-placeholder {
    color: white;
@@ -33,13 +33,13 @@
 </style>
 
 <!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
-<script src="js/jquery.min.js"></script>
-<script src="js/jquery.poptrox.min.js"></script>
-<script src="js/skel.min.js"></script>
-<script src="js/init.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/ripples.min.js"></script>
-<script src="js/material.min.js"></script>
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/jquery.poptrox.min.js"></script>
+<script src="/static/js/skel.min.js"></script>
+<script src="/static/js/init.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/ripples.min.js"></script>
+<script src="/static/js/material.min.js"></script>
 <link rel="stylesheet"
     href="//apps.bdimg.com/libs/jqueryui/1.10.4/css/jquery-ui.min.css">
 <script src="//apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -113,13 +113,14 @@
     };
 </script>
 
-<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
+<!--[if lte IE 8]><link rel="stylesheet" href="/static/css/ie/v8.css" /><![endif]-->
 </head>
 <body>
     <div id="head" class="row" style="padding-top: 50px">
         <div class="col-md-10 col-md-offset-1">
         <h2 style="color: white;font-size:30px;text-align:center">Please choose two camera models below or input models directly</h2> 
-            <form method="POST" action="compare.do">
+            <form method="POST">
+                {% csrf_token %}
             <div class="col-md-10 col-md-offset-1">
                 <div class="col-md-4" style="margin-top: 15px">
                     <input
@@ -133,7 +134,7 @@
                 </div>
                 <div class="col-md-4">
                     <button type="submit" class="btn btn-success btn-raised"
-                        name="action" value="like" onclick="a()">Begin to choose
+                        name="action" value="begin" onclick="a()">Begin to choose
                         your camera</button>
                 </div>
                 </div>
@@ -145,12 +146,12 @@
     <div id="accordion"  class="col-md-9 col-md-offset-2" style=" MARGIN-RIGHT: 160px ; MARGIN-top: 60px;MARGIN-LEFT: 160px; ">
         <h3>Canon</h3>
         <div>
-        <div><img class="col-md-2" src="images/camera/Canon5D3.jpg" alt="Canon5D3" />
-        <img class="col-md-2" src="images/camera/Canon6D.jpg" alt="Canon6D" />
-        <img class="col-md-2" src="images/camera/Canon7D.jpg" alt="Canon7D" />
-        <img class="col-md-2" src="images/camera/Canon70D.jpg" alt="Canon70D" />
-        <img class="col-md-2"src="images/camera/Canon60D.jpg" alt="Canon60D" />
-        <img class="col-md-2"src="images/camera/Canon70D.jpg" alt="Canon700D" />
+        <div><img class="col-md-2" src="/static/images/camera/Canon5D3.jpg" alt="Canon5D3" />
+        <img class="col-md-2" src="/static/images/camera/Canon6D.jpg" alt="Canon6D" />
+        <img class="col-md-2" src="/static/images/camera/Canon7D.jpg" alt="Canon7D" />
+        <img class="col-md-2" src="/static/images/camera/Canon70D.jpg" alt="Canon70D" />
+        <img class="col-md-2"src="/static/images/camera/Canon60D.jpg" alt="Canon60D" />
+        <img class="col-md-2"src="/static/images/camera/Canon70D.jpg" alt="Canon700D" />
         </div>
             <div id="checkboxes" class="row">       
                 <div class="checkbox" style="padding-bottom: 60px; width: 890px">
@@ -165,12 +166,12 @@
         </div>
         <h3>Nikon</h3>
         <div>
-        <div><img class="col-md-2" src="images/camera/NikonD750.jpg" alt="NikonD750" />
-        <img class="col-md-2" src="images/camera/NikonD7100.jpg" alt="NikonD7100" />
-        <img class="col-md-2" src="images/camera/NikonD7000.jpg" alt="NikonD7000" />
-        <img class="col-md-2" src="images/camera/NikonD5300.jpg" alt="NikonD5300" />
-        <img class="col-md-2"src="images/camera/NikonD5200.jpg" alt="NikonD5200" />
-        <img class="col-md-2"src="images/camera/NikonD3200.jpg" alt="NikonD3200" />
+        <div><img class="col-md-2" src="/static/images/camera/NikonD750.jpg" alt="NikonD750" />
+        <img class="col-md-2" src="/static/images/camera/NikonD7100.jpg" alt="NikonD7100" />
+        <img class="col-md-2" src="/static/images/camera/NikonD7000.jpg" alt="NikonD7000" />
+        <img class="col-md-2" src="/static/images/camera/NikonD5300.jpg" alt="NikonD5300" />
+        <img class="col-md-2"src="/static/images/camera/NikonD5200.jpg" alt="NikonD5200" />
+        <img class="col-md-2"src="/static/images/camera/NikonD3200.jpg" alt="NikonD3200" />
         </div>
             <div id="checkboxes" class="row">
                 <div class="checkbox" style="padding-bottom: 60px; width: 890px">
@@ -185,11 +186,11 @@
         </div>
         <h3>Sony</h3>
         <div>
-        <div><img class="col-md-2" src="images/camera/Sony A77.jpg" alt="Sony A77" />
-        <img class="col-md-2" src="images/camera/Sony A99.jpg" alt="Sony A99" />
-        <img class="col-md-2" src="images/camera/Sony ILCE-7.jpg" alt="Sony ILCE-7" />
-        <img class="col-md-2" src="images/camera/Sony ILCE6000.jpg" alt="Sony ILCE6000" />
-        <img class="col-md-2"src="images/camera/Sony RX10.jpg" alt="Sony RX10" />
+        <div><img class="col-md-2" src="/static/images/camera/Sony A77.jpg" alt="Sony A77" />
+        <img class="col-md-2" src="/static/images/camera/Sony A99.jpg" alt="Sony A99" />
+        <img class="col-md-2" src="/static/images/camera/Sony ILCE-7.jpg" alt="Sony ILCE-7" />
+        <img class="col-md-2" src="/static/images/camera/Sony ILCE6000.jpg" alt="Sony ILCE6000" />
+        <img class="col-md-2"src="/static/images/camera/Sony RX10.jpg" alt="Sony RX10" />
         </div>
             <div id="checkboxes" class="row">
                 <div class="checkbox" style="padding-bottom: 60px; width: 890px">
@@ -203,9 +204,9 @@
         </div>
         <h3>Pentax</h3>
         <div>
-        <div><img class="col-md-2" src="images/camera/Pentax K3.jpg" alt="Pentax K3" />
-        <img class="col-md-2" src="images/camera/Pentax K50.jpg" alt="Pentax K50" />
-        <img class="col-md-2" src="images/camera/Pentax KS1.jpg" alt="Pentax KS1" />
+        <div><img class="col-md-2" src="/static/images/camera/Pentax K3.jpg" alt="Pentax K3" />
+        <img class="col-md-2" src="/static/images/camera/Pentax K50.jpg" alt="Pentax K50" />
+        <img class="col-md-2" src="/static/images/camera/Pentax KS1.jpg" alt="Pentax KS1" />
         
         </div>
             <div id="checkboxes" class="row">
@@ -226,7 +227,7 @@
     </script>
 
 
-    <script src="js/checkbox.js"></script>
+    <script src="/static/js/checkbox.js"></script>
 </body>
 
 </html>

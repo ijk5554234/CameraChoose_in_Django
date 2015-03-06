@@ -40,11 +40,8 @@ def investigate(request):
     return render(request, "form.html", ctx)
 
 
-
-
-
 def index(request):
-    photos = getPhotos("123")
+    photos = getphotos("123")
     while len(photos) > 10:
         photos.pop()
     return render(request, 'login.html', {'photos': photos})
@@ -60,48 +57,55 @@ def login(request):
     access_url = str(auth['auth_url'])
     return HttpResponseRedirect(access_url)
 
-def test(request):
-    picture = request.session.get("picture")
+
+def compare(request):
+    if not request.POST or request.POST.get("action") is None:
+        return render(request, "compare.html", )
 
     # initialize the session
-    if picture is None:
-        camera1model = request.POST.get("camera1")
-        camera2model = request.POST.get("camera2")
-        camera1 = Camera(camera1model)
-        camera2 = Camera(camera2model)
-        picture = Picture(camera1, camera2)
-        pic1 = getPhotos(camera1model)
-        pic2 = getPhotos(camera2model)
-        for i in range(10):
-            if (i & 1) == 0:
-                picture.urllist.append(pic1.pop(0))
-            else:
-                picture.urllist.append(pic2.pop(0))
-        request.session["picture"] = picture
+    camera1 = request.POST.get("camera1")
+    camera2 = request.POST.get("camera2")
+    pic1 = getphotos(camera1)
+    pic2 = getphotos(camera2)
+    urllist = []
+    for i in range(10):
+        if (i & 1) == 0:
+            urllist.append(pic1.pop(0))
+        else:
+            urllist.append(pic2.pop(0))
+    request.session["index"] = 0
+    request.session["camera1"] = camera1
+    request.session["camera2"] = camera2
+    request.session["count1"] = 0
+    request.session["count2"] = 0
+    request.session["urllist"] = urllist
+    return test(request)
+
+
+def test(request):
+    index = request.session["index"]
+    camera1 = request.session["camera1"]
+    camera2 = request.session["camera2"]
+    urllist = request.session["urllist"]
+
     #return condition
-    if picture.index == 11:
-        cameras = {"camera1": camera1, "camera2": camera2}
-        request.session["cameras"] = cameras
+    if index == 11:
         return render(request, "result.html", )
 
     #set the url and index
-    picture.url = picture.urllist.pop(0)
-    picture.index += 1
+    url = urllist.pop(0)
+    request.session["index"] += 1
 
     if request.POST.get("action") == "like":
-        if (picture.index & 1) == 0:
-            picture.camera1.count += 1
+        if (index & 1) == 0:
+            request.session["count1"] += 1
         else:
-            picture.camera2.count += 1
+            request.session["count2"] += 1
 
-    return render(request, "blind.html",)
-
-
+    return render(request, "blind.html", {"url": url})
 
 
-
-
-def getPhotos(cameramodel):
+def getphotos(cameramodel):
     import flickrapi
     api_key = "522bd85601ed0e20cca4fcb60762131f"
     api_secret = "fbc62843365374ac"
@@ -118,16 +122,3 @@ def getPhotos(cameramodel):
         if len(photos) > 25:
             break
     return photos
-
-class Camera:
-    def __init__(self, model):
-        self.count = 0;
-        self.model = model
-
-class Picture:
-    def __init__(self, camera1, camera2):
-        self.url = ""
-        self.index = 0
-        self.camera1 = camera1
-        self.camera2 = camera2
-        self.urllist = []
