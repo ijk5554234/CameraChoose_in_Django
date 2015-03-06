@@ -1,0 +1,237 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ page import="databeans.PictureBean"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Camera Choose-Compare</title>
+<meta name="viewport" content="width=1200,user-scalable=no" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/ripples.min.css" rel="stylesheet">
+<link href="css/material-wfont.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="css/skel.css" />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/style-desktop.css" />
+<link rel="stylesheet" href="css/style-noscript.css" />
+<style>
+::-webkit-input-placeholder {
+   color: white;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+   color: white;  
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+   color: white;  
+}
+
+:-ms-input-placeholder {  
+   color: white;  
+}
+</style>
+
+<!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.poptrox.min.js"></script>
+<script src="js/skel.min.js"></script>
+<script src="js/init.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/ripples.min.js"></script>
+<script src="js/material.min.js"></script>
+<link rel="stylesheet"
+    href="//apps.bdimg.com/libs/jqueryui/1.10.4/css/jquery-ui.min.css">
+<script src="//apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="jqueryui/style.css">
+
+<script>
+    $(function() {
+        $("#accordion").accordion({
+            event : "click hoverintent"
+        });
+    });
+
+    /*
+     * hoverIntent | Copyright 2011 Brian Cherne
+     * http://cherne.net/brian/resources/jquery.hoverIntent.html
+     * modified by the jQuery UI team
+     */
+    $.event.special.hoverintent = {
+        setup : function() {
+            $(this).bind("mouseover", jQuery.event.special.hoverintent.handler);
+        },
+        teardown : function() {
+            $(this).unbind("mouseover",
+                    jQuery.event.special.hoverintent.handler);
+        },
+        handler : function(event) {
+            var currentX, currentY, timeout, args = arguments, target = $(event.target), previousX = event.pageX, previousY = event.pageY;
+
+            function track(event) {
+                currentX = event.pageX;
+                currentY = event.pageY;
+            }
+            ;
+
+            function clear() {
+                target.unbind("mousemove", track).unbind("mouseout", clear);
+                clearTimeout(timeout);
+            }
+
+            function handler() {
+                var prop, orig = event;
+
+                if ((Math.abs(previousX - currentX) + Math.abs(previousY
+                        - currentY)) < 7) {
+                    clear();
+
+                    event = $.Event("hoverintent");
+                    for (prop in orig) {
+                        if (!(prop in event)) {
+                            event[prop] = orig[prop];
+                        }
+                    }
+
+                    delete event.originalEvent;
+
+                    target.trigger(event);
+                } else {
+                    previousX = currentX;
+                    previousY = currentY;
+                    timeout = setTimeout(handler, 100);
+                }
+            }
+
+            timeout = setTimeout(handler, 100);
+            target.bind({
+                mousemove : track,
+                mouseout : clear
+            });
+        }
+    };
+</script>
+
+<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
+</head>
+<body>
+    <div id="head" class="row" style="padding-top: 50px">
+        <div class="col-md-10 col-md-offset-1">
+        <h2 style="color: white;font-size:30px;text-align:center">Please choose two camera models below or input models directly</h2> 
+            <form method="POST" action="compare.do">
+            <div class="col-md-10 col-md-offset-1">
+                <div class="col-md-4" style="margin-top: 15px">
+                    <input
+                        id="cm1"  type="text"
+                        class="form-control" placeholder="Model 1" name="camera1">
+                </div>
+                <div class="col-md-4" style="margin-top: 15px">
+                 <input
+                        id="cm2" style=" input-placeholder:white" type="text"
+                        class="form-control" placeholder="Model 2" name="camera2">
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-success btn-raised"
+                        name="action" value="like" onclick="a()">Begin to choose
+                        your camera</button>
+                </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div id="accordion"  class="col-md-9 col-md-offset-2" style=" MARGIN-RIGHT: 160px ; MARGIN-top: 60px;MARGIN-LEFT: 160px; ">
+        <h3>Canon</h3>
+        <div>
+        <div><img class="col-md-2" src="images/camera/Canon5D3.jpg" alt="Canon5D3" />
+        <img class="col-md-2" src="images/camera/Canon6D.jpg" alt="Canon6D" />
+        <img class="col-md-2" src="images/camera/Canon7D.jpg" alt="Canon7D" />
+        <img class="col-md-2" src="images/camera/Canon70D.jpg" alt="Canon70D" />
+        <img class="col-md-2"src="images/camera/Canon60D.jpg" alt="Canon60D" />
+        <img class="col-md-2"src="images/camera/Canon70D.jpg" alt="Canon700D" />
+        </div>
+            <div id="checkboxes" class="row">       
+                <div class="checkbox" style="padding-bottom: 60px; width: 890px">
+                    <label  class="col-md-2"><input type="checkbox">Canon 5D</label>
+                    <label  class="col-md-2" style="margin-left: 5px" ><input type="checkbox">Canon 6D</label>
+                    <label  class="col-md-2"><input type="checkbox">Canon 7D</label> 
+                    <label  class="col-md-2"><input type="checkbox">Canon 70D</label> 
+                    <label  class="col-md-2"><input type="checkbox">Canon 60D</label>
+                    <label  class="col-md-2" style="margin-left: -10px"><input type="checkbox">Canon 700D</label>
+                </div>
+            </div>
+        </div>
+        <h3>Nikon</h3>
+        <div>
+        <div><img class="col-md-2" src="images/camera/NikonD750.jpg" alt="NikonD750" />
+        <img class="col-md-2" src="images/camera/NikonD7100.jpg" alt="NikonD7100" />
+        <img class="col-md-2" src="images/camera/NikonD7000.jpg" alt="NikonD7000" />
+        <img class="col-md-2" src="images/camera/NikonD5300.jpg" alt="NikonD5300" />
+        <img class="col-md-2"src="images/camera/NikonD5200.jpg" alt="NikonD5200" />
+        <img class="col-md-2"src="images/camera/NikonD3200.jpg" alt="NikonD3200" />
+        </div>
+            <div id="checkboxes" class="row">
+                <div class="checkbox" style="padding-bottom: 60px; width: 890px">
+                                <label  class="col-md-2"><input type="checkbox">Nikon D750</label> 
+                                <label  class="col-md-2"><input type="checkbox">Nikon D7100</label> 
+                                <label  class="col-md-2"><input type="checkbox">Nikon D7000</label> 
+                            <label  class="col-md-2"><input type="checkbox">Nikon D5300</label> 
+                            <label  class="col-md-2"><input type="checkbox">Nikon D5200</label> 
+                            <label  class="col-md-2"><input type="checkbox">Nikon D3200</label> 
+                </div>
+            </div>
+        </div>
+        <h3>Sony</h3>
+        <div>
+        <div><img class="col-md-2" src="images/camera/Sony A77.jpg" alt="Sony A77" />
+        <img class="col-md-2" src="images/camera/Sony A99.jpg" alt="Sony A99" />
+        <img class="col-md-2" src="images/camera/Sony ILCE-7.jpg" alt="Sony ILCE-7" />
+        <img class="col-md-2" src="images/camera/Sony ILCE6000.jpg" alt="Sony ILCE6000" />
+        <img class="col-md-2"src="images/camera/Sony RX10.jpg" alt="Sony RX10" />
+        </div>
+            <div id="checkboxes" class="row">
+                <div class="checkbox" style="padding-bottom: 60px; width: 890px">
+                    <label  class="col-md-2"><input type="checkbox" >Sony A77</label> <label class="col-md-2"><input
+                        type="checkbox" >Sony A99</label> <label class="col-md-2"><input
+                        type="checkbox" >Sony ILCE-7</label> <label class="col-md-3"><input
+                        type="checkbox" >Sony ILCE6000</label><label class="col-md-2" style="margin-left: -40px" ><input
+                        type="checkbox" >Sony RX10</label>
+                </div>
+            </div>
+        </div>
+        <h3>Pentax</h3>
+        <div>
+        <div><img class="col-md-2" src="images/camera/Pentax K3.jpg" alt="Pentax K3" />
+        <img class="col-md-2" src="images/camera/Pentax K50.jpg" alt="Pentax K50" />
+        <img class="col-md-2" src="images/camera/Pentax KS1.jpg" alt="Pentax KS1" />
+        
+        </div>
+            <div id="checkboxes" class="row">
+                <div class="checkbox" style="padding-bottom: 60px; width: 890px">
+                    <label class="col-md-2"><input type="checkbox">Pentax K3</label> <label class="col-md-2"><input
+                        type="checkbox" >Pentax K50</label> <label class="col-md-2"><input
+                        type="checkbox" >Pentax KS1</label>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $.material.init();
+        });
+    </script>
+
+
+    <script src="js/checkbox.js"></script>
+</body>
+
+</html>

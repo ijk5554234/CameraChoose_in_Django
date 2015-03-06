@@ -1,0 +1,8 @@
+<form action="/camerachoose/investigate/" method="POST">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="submit">
+</form>
+what your have submitted: <h3>{{model}}</h3> at {{date}}.
+
+   <p> <a href="/camerachoose/"> back to home page</a> </p>
