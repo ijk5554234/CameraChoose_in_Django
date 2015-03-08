@@ -46,6 +46,7 @@ def index(request):
         photos.pop()
     return render(request, 'login.html', {'photos': photos})
 
+
 def login(request):
     from twython import Twython
     APP_KEY = "foWNuG5j0oJdoXoCktS8jdltP"
@@ -93,7 +94,7 @@ def test(request):
         return render(request, "result.html", )
 
     #set the url and index
-    url = urllist.pop(0)
+    url = urllist.pop(0)["url"]
     request.session["index"] += 1
 
     if request.POST.get("action") == "like":
@@ -116,7 +117,7 @@ def getphotos(cameramodel):
         secret = photo.get("secret")
         server = photo.get("server")
         farm = photo.get("farm")
-        photo_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_"+ secret + ".jpg";
+        photo_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + ".jpg"
         p = {"title": photo.get("title"), "url": photo_url}
         photos.append(p)
         if len(photos) > 25:
