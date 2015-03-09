@@ -1,44 +1,12 @@
 from django.shortcuts import render
-
+from twython import Twython
 from django.http import HttpResponseRedirect
 from django.core.context_processors import csrf
 from camerachoose.models import Camera
 from django import forms
 
-
-
-def list(request):
-    list = Camera.objects.all()
-    cameras = []
-    for i in range(len(list)):
-        cameras.append(list[i].model)
-    return render(request, 'templay.html', {'cameras': cameras})
-
-class CameraForm(forms.Form):
-    model = forms.CharField(max_length=20, min_length=5)
-    date = forms.DateField()
-
-def form(request):
-    form = CameraForm()
-    ctx = {}
-    ctx['form'] = form
-    return render(request, "form.html", ctx)
-
-def investigate(request):
-    ctx = {}
-    if request.POST:
-        form = CameraForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data['model']
-            new_record = Camera(model=data)
-            new_record.save()
-            ctx['model'] = form.cleaned_data['model']
-        else:
-            ctx['model'] = 'Wrong'
-
-    ctx['form'] = CameraForm()
-    return render(request, "form.html", ctx)
-
+APP_KEY = "foWNuG5j0oJdoXoCktS8jdltP"
+APP_SECRET = "O0oojri6fKpIbAo53ktesqInSnJbfoWYSzU7FAaeJxTPwfC9Yk"
 
 def index(request):
     photos = getphotos("123")
@@ -48,19 +16,22 @@ def index(request):
 
 
 def login(request):
-    from twython import Twython
-    APP_KEY = "foWNuG5j0oJdoXoCktS8jdltP"
-    APP_SECRET = "O0oojri6fKpIbAo53ktesqInSnJbfoWYSzU7FAaeJxTPwfC9Yk"
     t = Twython(APP_KEY, APP_SECRET)
-    auth = t.get_authentication_tokens()
-    OAUTH_TOKEN = auth['oauth_token']
-    OAUTH_TOKEN_SECRET = auth['oauth_token_secret']
+    auth = t.get_authentication_tokens(callback_url='http://127.0.0.1:8000/callback/')
     access_url = str(auth['auth_url'])
+    request.session["OAUTH_TOKEN"] = auth['oauth_token']
+    request.session["OAUTH_TOKEN_SECRET"] = auth['oauth_token_secret']
     return HttpResponseRedirect(access_url)
 
 
 def compare(request):
     if not request.POST or request.POST.get("action") is None:
+        token = request.session["OAUTH_TOKEN"]
+        secret = request.session["OAUTH_TOKEN_SECRET"]
+        t = Twython(APP_KEY, APP_SECRET, token, secret)
+        final_step = t.get_authorized_tokens(request.GET["oauth_verifier"])
+        request.session["OAUTH_TOKEN"] = final_step['oauth_token']
+        request.session["OAUTH_TOKEN_SECRET"] = final_step['oauth_token_secret']
         return render(request, "compare.html", )
 
     # initialize the session
@@ -90,8 +61,8 @@ def test(request):
     urllist = request.session["urllist"]
 
     #return condition
-    if index == 11:
-        return render(request, "result.html", )
+    if index == 11 or len(urllist) == 0:
+        return result(request)
 
     #set the url and index
     url = urllist.pop(0)["url"]
@@ -105,6 +76,19 @@ def test(request):
 
     return render(request, "blind.html", {"url": url})
 
+
+def result(request):
+        ctx = {}
+        wincamera = request.session["camera1"]
+        if request.session["count2"] > request.session["count2"]:
+            wincamera = request.session["camera2"]
+        ctx['camera'] = wincamera
+        from datetime import date
+        today = date.today()
+        from camerachoose.models import Camera
+        new_record = Camera(model=wincamera, date=today)
+        new_record.save()
+        render(request, "result.html", ctx)
 
 def getphotos(cameramodel):
     import flickrapi

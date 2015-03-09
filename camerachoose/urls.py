@@ -7,6 +7,8 @@ urlpatterns = patterns('',
     url(r'^investigate/', 'camerachoose.views.investigate'),
     url(r'^templay/', 'camerachoose.views.list'),
     url(r'^index/', 'camerachoose.views.index'),
+    url(r'^compare/', 'camerachoose.views.compare'),
+    url(r'^test/', 'camerachoose.views.test'),
     url(r'^$', 'camerachoose.views.index'),
 
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',

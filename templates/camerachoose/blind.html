@@ -9,7 +9,6 @@
 <link href="/static/css/bootstrap.min.css" rel="stylesheet">
 <link href="/static/css/ripples.min.css" rel="stylesheet">
 <link href="/static/css/material-wfont.min.css" rel="stylesheet">
-<!--[if lte IE 8]><script src="/static/css/ie/html5shiv.js"></script><![endif]-->
 <script src="/static/js/jquery.min.js"></script>
 <script src="/static/js/jquery.poptrox.min.js"></script>
 <script src="/static/js/skel.min.js"></script>
@@ -22,27 +21,24 @@
         $.material.init();
     });
 </script>
-<noscript>
     <link rel="stylesheet" href="/static/css/skel.css" />
     <link rel="stylesheet" href="/static/css/style.css" />
     <link rel="stylesheet" href="/static/css/style-desktop.css" />
     <link rel="stylesheet" href="/static/css/style-noscript.css" />
-</noscript>
-<!--[if lte IE 8]><link rel="stylesheet" href="/static/css/ie/v8.css" /><![endif]-->
     </head>
     <body>
         <div class="col-md-8 col-md-offset-2">
             <h2 style="text-shadow:2px 2px gray; text-align:center">Do you want to take photographs like this picture?</h2>
-                        <form method="POST">
-                            {% csrf_token %}
                         <div align="center" style="height:400px; margin:auto; margin-top:50px">
                         <img class="center" style="height:100%" src="{{url}}" />
                         </div>
                             <div  class="col-md-4 col-md-offset-4">
-                                <button  class="btn btn-success btn-raised" type="submit" name="action" value="like">Like it</button>
-                                <button  class="btn btn-default btn-raised" type="submit" name="action" value="dislike" style="color:white">Dislike it</button>
+                                <form method="POST" action="/camerachoose/test/">
+                                    {% csrf_token %}
+                                    <button  class="btn btn-success btn-raised" type="submit" name="action" value="like">Like it</button>
+                                    <button  class="btn btn-default btn-raised" type="submit" name="action" value="dislike" style="color:white">Dislike it</button>
+                                </form>
                             </div>
-                        </form>
         </div><!-- /pagewrap -->
     </body>
 </html>
