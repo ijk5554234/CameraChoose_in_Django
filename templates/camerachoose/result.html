@@ -51,9 +51,9 @@
           data.addColumn('date', 'Date');
           data.addColumn('number','{{camera1}}' );
           data.addColumn('number','{{camera2}}' );
-          <c:forEach var="record" items="${DateRecords}"> 
-          data.addRow([ new Date(${record.date}),  ${record.camera1Num}, ${record.camera2Num}]);
-          </c:forEach>  
+          {% for daterec in daterecord %}
+          data.addRow([ new Date({{daterec.date}}), {{daterec.camera1Num}}, {{daterec.camera2Num}}]);
+          {% endfor %}
 
        var options = {
           title: 'Camera Choose Trend',
@@ -168,7 +168,7 @@ amzn_assoc_bg_color = "000000";
 				<h4>
 					Share your test result to your friends on
 					Twitter!&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a
-						href="camerachoose/logout">Logout</a>
+						href="/camerachoose/logout">Logout</a>
 				</h4>
 				<h4> {{msg}}</h4>
 				<textarea align="center" class="form-control" rows="3" id="textArea"

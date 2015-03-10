@@ -83,9 +83,11 @@ def test(request):
 
 def result(request):
         ctx = {}
-        wincamera = request.session["camera1"]
+        camera1 = request.session["camera1"]
+        camera2 = request.session["camera2"]
+        wincamera = camera1
         if request.session["count2"] > request.session["count2"]:
-            wincamera = request.session["camera2"]
+            wincamera = camera2
         ctx['camera'] = wincamera
 
         #update the database
@@ -95,8 +97,29 @@ def result(request):
         new_record = Camera(model=wincamera, date=today)
         new_record.save()
 
-
         #prepare from the diagram
+        record1 = Camera.objects.filter(model=camera1)
+        record2 = Camera.objects.filter(model=camera2)
+        camera1Times = len(record1)
+        camera2Times = len(record2)
+
+        daterecord = []
+        from datetime import timedelta
+        for i in range(30):
+            cur = today - timedelta(days=i)
+            num1 = len(record1.filter(date=cur))
+            num2 = len(record2.filter(date=cur))
+            daterec = {"date": str(cur), "camera1Num": num1, "camera2Num": num2}
+            print(str(daterec["date"])+ "   " + str(daterec["camera1Num"]) + "   "+ str(daterec["camera1Num"]))
+            daterecord.append(daterec)
+
+        ctx["camera1"] = camera1
+        ctx["camera2"] = camera2
+        ctx["camera1Times"] = camera1Times
+        ctx["camera2Times"] = camera2Times
+        ctx["daterecord"] = daterecord
+        ctx["camera1SearchNum"] = 1000
+        ctx["camera2SearchNum"] = 1355
 
 
         #search the popular tweets
@@ -134,7 +157,7 @@ def anothertest(request):
 
 def logout(request):
     del request.session
-    return HttpResponseRedirect("camerachoose/index")
+    return index(request)
 
 
 def getphotos(cameramodel):

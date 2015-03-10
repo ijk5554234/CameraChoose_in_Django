@@ -2,7 +2,6 @@ __author__ = 'Jike'
 from django.conf.urls import patterns, include, url
 import mysite
 urlpatterns = patterns('',
-    url(r'^form/', 'camerachoose.views.form'),
     url(r'^login/', 'camerachoose.views.login'),
     url(r'^investigate/', 'camerachoose.views.investigate'),
     url(r'^templay/', 'camerachoose.views.list'),
