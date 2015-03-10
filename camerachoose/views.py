@@ -132,7 +132,7 @@ def result(request):
         try:
             results = t.cursor(t.search, q=wincamera, lang="en")
             for tweet in results:
-                tweets.append(tweet)
+                tweets.append(str(tweet))
             ctx["tweets"] = tweets["statuses"]
         except TwythonRateLimitError:
             ctx["msg"] = "Request rate limits exceed"
