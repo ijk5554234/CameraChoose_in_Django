@@ -74,12 +74,12 @@
       google.setOnLoadCallback(drawChart);
        
         function drawChart() {
-          var camera1Times = ${camera1Times};
-          var camera2Times = ${camera2Times};
+          var camera1Times = {{camera1Times}};
+          var camera2Times = {{camera2Times}};
         var data = google.visualization.arrayToDataTable([
           ['Camera', 'Choose Result'],
-          ['{{camera1name}}', camera1Times ],
-          ['{{camera2name}}', camera2Times],
+          ['{{camera1}}', camera1Times ],
+          ['{{camera2}}', camera2Times],
         ]);
 
         var options = {
@@ -100,12 +100,12 @@
     google.load('visualization', '1', {packages: ['corechart']});
     google.setOnLoadCallback(drawChart);
     function drawChart() {
-      var camera1Num = ${camera1SearchNum};
-      var camera2Num = ${camera2SearchNum};
+      var camera1Num = {{camera1SearchNum}};
+      var camera2Num = {{camera2SearchNum}};
       var data = google.visualization.arrayToDataTable([
         ['Camera',          'Search Heat Rate'],
-        ['{{camera1name}',       camera1Num ],
-        ['${camera2name}',       camera2Num ]      
+        ['{{camera1}}',       camera1Num ],
+        ['{{camera2}}',       camera2Num ]
       ]);
 
       var options = {
@@ -133,10 +133,10 @@
 	<div class="row">
 		<div class="col-md-8 col-md-offset-2">
 			<div class="col-md-6">
-				<h4>Hot comments about ${camera.model} on Twitter:</h4>
-				<c:forEach var="t" items="${tweets}">
-					<p style="color: blue">${t}</p>
-				</c:forEach>
+				<h4>Hot comments about {{camera}} on Twitter:</h4>
+                {% for tweet in tweets %}
+                <p>{{tweet}}</p>
+                {% endfor %}
 			</div>
 			<div class="col-md-6">
 				<script charset="utf-8" type="text/javascript">
@@ -162,23 +162,23 @@ amzn_assoc_bg_color = "000000";
 
 
 	<div class="col-md-8 col-md-offset-2">
-		<form class="form-horizontal" action="result.do" method="post">
-
+		<form class="form-horizontal"  method="post">
+            {% csrf_token %}
 			<fieldset>
 				<h4>
 					Share your test result to your friends on
 					Twitter!&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a
-						href="logout.do">Logout</a>
+						href="camerachoose/logout">Logout</a>
 				</h4>
-				<h4> ${msg}</h4>
+				<h4> {{msg}}</h4>
 				<textarea align="center" class="form-control" rows="3" id="textArea"
 					name="text">
-        I got a test on CameraChoose and the best camera for me is {{wincamera.model}} Try it on www.camerachoose.com!
+        I got a test on CameraChoose and the best camera for me is {{camera}} Try it on www.camerachoose.com!
         </textarea>
 				<div class="form-group" style="margin-bottom: 0px;">
 					<div align="right" class="col-lg-10 col-lg-offset-2">
 						<a class="btn btn-default btn-sm" style="color: white"
-							href="compare.do">Test again!</a>
+							href="/camerachoose/anothertest">Test again!</a>
 						<button type="submit" name="action" value="tweet"
 							class="btn btn-primary btn-sm">Share!</button>
 					</div>
@@ -199,8 +199,8 @@ amzn_assoc_bg_color = "000000";
 
 	<script src="/static/js/ripples.min.js"></script>
 	<script src="/static/js/material.min.js"></script>
-	<script type="/static/text/javascript" src="js/jquery-1.4.2.min.js"></script>
-	<script type="/static/text/javascript" src="js/roundabout.js"></script>
+	<script type="text/javascript" src="/static/js/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="/static/js/roundabout.js"></script>
 	<!--中间广告图片2-->
 	<script type="text/javascript" src="/static/js/roundabout_shapes.js"></script>
 	<!--中间广告图片3-->

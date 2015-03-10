@@ -8,8 +8,9 @@ from django import forms
 APP_KEY = "foWNuG5j0oJdoXoCktS8jdltP"
 APP_SECRET = "O0oojri6fKpIbAo53ktesqInSnJbfoWYSzU7FAaeJxTPwfC9Yk"
 
+
 def index(request):
-    photos = getphotos("123")
+    photos = getphotos("popular")
     while len(photos) > 10:
         photos.pop()
     return render(request, 'login.html', {'photos': photos})
@@ -21,17 +22,19 @@ def login(request):
     access_url = str(auth['auth_url'])
     request.session["OAUTH_TOKEN"] = auth['oauth_token']
     request.session["OAUTH_TOKEN_SECRET"] = auth['oauth_token_secret']
+    request.session["login"] = False
     return HttpResponseRedirect(access_url)
 
 
 def compare(request):
-    if not request.POST or request.POST.get("action") is None:
+    if not request.POST:
         token = request.session["OAUTH_TOKEN"]
         secret = request.session["OAUTH_TOKEN_SECRET"]
         t = Twython(APP_KEY, APP_SECRET, token, secret)
         final_step = t.get_authorized_tokens(request.GET["oauth_verifier"])
         request.session["OAUTH_TOKEN"] = final_step['oauth_token']
         request.session["OAUTH_TOKEN_SECRET"] = final_step['oauth_token_secret']
+        request.session["login"] = True
         return render(request, "compare.html", )
 
     # initialize the session
@@ -45,6 +48,7 @@ def compare(request):
             urllist.append(pic1.pop(0))
         else:
             urllist.append(pic2.pop(0))
+    print("length of url==" + str(len(urllist)))
     request.session["index"] = 0
     request.session["camera1"] = camera1
     request.session["camera2"] = camera2
@@ -62,7 +66,7 @@ def test(request):
 
     #return condition
     if index == 11 or len(urllist) == 0:
-        return result(request)
+        return HttpResponseRedirect("/camerachoose/result")
 
     #set the url and index
     url = urllist.pop(0)["url"]
@@ -83,12 +87,55 @@ def result(request):
         if request.session["count2"] > request.session["count2"]:
             wincamera = request.session["camera2"]
         ctx['camera'] = wincamera
+
+        #update the database
         from datetime import date
         today = date.today()
         from camerachoose.models import Camera
         new_record = Camera(model=wincamera, date=today)
         new_record.save()
-        render(request, "result.html", ctx)
+
+
+        #prepare from the diagram
+
+
+        #search the popular tweets
+        token = request.session["OAUTH_TOKEN"]
+        secret = request.session["OAUTH_TOKEN_SECRET"]
+        t = Twython(APP_KEY, APP_SECRET, token, secret)
+        #tweets = t.search(q=wincamera, result_type='popular')
+        tweets = []
+        from twython import TwythonRateLimitError
+        try:
+            results = t.cursor(t.search, q=wincamera, lang="en")
+            for tweet in results:
+                tweets.append(tweet)
+            ctx["tweets"] = tweets["statuses"]
+        except TwythonRateLimitError:
+            ctx["msg"] = "Request rate limits exceed"
+        if not request.POST or request.POST["action"]is None:
+            return render(request, "result.html", ctx)
+
+        #tweet the result
+        text = request.POST["text"]
+        from twython import TwythonError
+        try:
+            t.update_status(status=text)
+        except TwythonError:
+            ctx["msg"] = "You result has already been tweeted"
+            return render(request, "result.html", ctx)
+        ctx["msg"] = "Result has been tweeted"
+        return render(request, "result.html", ctx)
+
+
+def anothertest(request):
+    return render(request, "compare.html", )
+
+
+def logout(request):
+    del request.session
+    return HttpResponseRedirect("camerachoose/index")
+
 
 def getphotos(cameramodel):
     import flickrapi
