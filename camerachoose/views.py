@@ -3,6 +3,8 @@ from twython import Twython
 from django.http import HttpResponseRedirect
 from django.core.context_processors import csrf
 from camerachoose.models import Camera
+import urllib
+import json
 from django import forms
 
 APP_KEY = "foWNuG5j0oJdoXoCktS8jdltP"
@@ -11,8 +13,6 @@ APP_SECRET = "O0oojri6fKpIbAo53ktesqInSnJbfoWYSzU7FAaeJxTPwfC9Yk"
 
 def index(request):
     photos = getphotos("popular")
-    while len(photos) > 10:
-        photos.pop()
     return render(request, 'login.html', {'photos': photos})
 
 
@@ -69,15 +69,18 @@ def test(request):
         return HttpResponseRedirect("/camerachoose/result")
 
     #set the url and index
-    url = urllist.pop(0)["url"]
-    request.session["index"] += 1
-
-    if request.POST.get("action") == "like":
+    url = urllist[0]["url"]
+    if not request.POST:
+        return render(request, "blind.html", {"url": url})
+    if request.POST.get("at") == "like":
         if (index & 1) == 0:
             request.session["count1"] += 1
+            print("ac=like")
         else:
             request.session["count2"] += 1
-
+            print("ac=dislike")
+    request.session["index"] += 1
+    urllist.pop(0)
     return render(request, "blind.html", {"url": url})
 
 
@@ -110,7 +113,6 @@ def result(request):
             num1 = len(record1.filter(date=cur))
             num2 = len(record2.filter(date=cur))
             daterec = {"date": str(cur), "camera1Num": num1, "camera2Num": num2}
-            print(str(daterec["date"])+ "   " + str(daterec["camera1Num"]) + "   "+ str(daterec["camera1Num"]))
             daterecord.append(daterec)
 
         ctx["camera1"] = camera1
@@ -118,22 +120,25 @@ def result(request):
         ctx["camera1Times"] = camera1Times
         ctx["camera2Times"] = camera2Times
         ctx["daterecord"] = daterecord
-        ctx["camera1SearchNum"] = 1000
-        ctx["camera2SearchNum"] = 1355
-
+        ctx["camera1SearchNum"] = getsearchranking(camera1)
+        ctx["camera2SearchNum"] = getsearchranking(camera2)
 
         #search the popular tweets
         token = request.session["OAUTH_TOKEN"]
         secret = request.session["OAUTH_TOKEN_SECRET"]
         t = Twython(APP_KEY, APP_SECRET, token, secret)
-        #tweets = t.search(q=wincamera, result_type='popular')
         tweets = []
         from twython import TwythonRateLimitError
         try:
             results = t.cursor(t.search, q=wincamera, lang="en")
+            num = 0
             for tweet in results:
-                tweets.append(str(tweet))
-            ctx["tweets"] = tweets["statuses"]
+                if tweet['text'] is not None:
+                    tweets.append(str(tweet["text"]))
+                    num += 1
+                    if num > 5:
+                        break
+            ctx["tweets"] = tweets
         except TwythonRateLimitError:
             ctx["msg"] = "Request rate limits exceed"
         if not request.POST or request.POST["action"]is None:
@@ -157,9 +162,10 @@ def anothertest(request):
 
 def logout(request):
     del request.session
-    return index(request)
+    return HttpResponseRedirect("/camerachoose/index")
 
 
+#return a collection
 def getphotos(cameramodel):
     import flickrapi
     api_key = "522bd85601ed0e20cca4fcb60762131f"
@@ -174,6 +180,17 @@ def getphotos(cameramodel):
         photo_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + ".jpg"
         p = {"title": photo.get("title"), "url": photo_url}
         photos.append(p)
-        if len(photos) > 25:
+        if len(photos) > 10:
             break
     return photos
+
+
+# return the search ranking, an integer
+def getsearchranking(searchfor):
+    query = urllib.parse.urlencode({'q': searchfor})
+    url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&%s' % query
+    search_response = urllib.request.urlopen(url)
+    search_results = search_response.read().decode("utf8")
+    results = json.loads(search_results)
+    data = results['responseData']
+    return data["cursor"]['estimatedResultCount']

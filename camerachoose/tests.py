@@ -16,4 +16,28 @@ def getPhotos(cameramodel):
             break
         print(photo_url)
 
-getPhotos("nike")
+def getTweets(word):
+    from twython import Twython
+    APP_KEY = "foWNuG5j0oJdoXoCktS8jdltP"
+    APP_SECRET = "O0oojri6fKpIbAo53ktesqInSnJbfoWYSzU7FAaeJxTPwfC9Yk"
+    t = Twython(APP_KEY, APP_SECRET)
+    results = t.cursor(t.search, q="camera", lang="en")
+    for tweet in results:
+        if tweet['text'] is not None:
+            print(str(tweet['text']))
+
+
+import json
+import urllib
+import json
+import urllib.request, urllib.parse
+
+def showsome(searchfor):
+  query = urllib.parse.urlencode({'q': searchfor})
+  url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&%s' % query
+  search_response = urllib.request.urlopen(url)
+  search_results = search_response.read().decode("utf8")
+  results = json.loads(search_results)
+  data = results['responseData']
+  print('Total results: %s' % data['cursor']['estimatedResultCount'])
+showsome("JikeLi")
